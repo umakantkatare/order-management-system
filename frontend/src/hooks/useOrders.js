@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getOrders } from "../api/order.api";
+import { getOrders } from "../api/orderApi";
 
 const useOrders = () => {
   const [orders, setOrders] = useState([]);
