@@ -1,7 +1,6 @@
 import formatDate from "../../utils/formatDate";
 
 const OrderRow = ({ order }) => {
-  // Dynamic styling helper for Order/Fulfillment status
   const getStatusStyles = (status) => {
     const s = status?.toLowerCase();
     if (s === "delivered" || s === "completed") {
@@ -16,7 +15,6 @@ const OrderRow = ({ order }) => {
     return "bg-gray-50 text-gray-600 border-gray-200";
   };
 
-  // Dynamic styling helper for Payment status
   const getPaymentStyles = (status) => {
     const s = status?.toLowerCase();
     if (s === "paid" || s === "success") {

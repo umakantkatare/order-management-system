@@ -9,7 +9,14 @@ dotenv.config({ quiet: true });
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", process.env.CLIENT_URL],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-secret-key"],
+  }),
+);
 
 app.use(express.json());
 
