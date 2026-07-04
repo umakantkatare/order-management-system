@@ -1,22 +1,19 @@
 import { useState } from "react";
 import "./App.css";
 import axiosInstance from "./api/axios";
+import { getOrders } from "./api/orderApi";
 
 function App() {
-  const testConnection = async () => {
-    try {
-      const response = await axiosInstance.get("/orders");
+  const test = async () => {
+    const data = await getOrders();
 
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+    console.log(data);
   };
 
   return (
     <div className="p-10">
       <button
-        onClick={testConnection}
+        onClick={test}
         className="rounded bg-blue-600 px-4 py-2 text-white"
       >
         Test Backend Connection
