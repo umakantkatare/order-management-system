@@ -14,7 +14,7 @@ const useOrders = () => {
 
       const response = await getOrders(selectedStatus);
 
-      setOrders(response.data);
+      setOrders(response.data.orders);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch orders.");
     } finally {
