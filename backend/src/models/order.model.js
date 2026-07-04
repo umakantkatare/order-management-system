@@ -51,6 +51,11 @@ const orderSchema = new mongoose.Schema(
   },
 );
 
+orderSchema.index({
+  status: 1,
+  updatedAt: 1,
+});
+
 const Order = mongoose.model("Order", orderSchema);
 
 export default Order;

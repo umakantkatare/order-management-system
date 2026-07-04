@@ -30,28 +30,29 @@ export const findProcessingOrders = async (beforeDate) => {
 /**
  * Update order status
  */
-export const updateOrderStatus = async (orderId, status) => {
+export const updateOrderStatus = async (orderId, status, session) => {
   return await Order.findByIdAndUpdate(
     orderId,
-    {
-      status,
-    },
+    { status },
     {
       new: true,
+      session,
     },
   );
 };
-
 /**
  * Create order status history
  */
-export const createOrderHistory = async (payload) => {
-  return await OrderStatusHistory.create(payload);
+export const createOrderHistory = async (payload, session) => {
+  return await OrderStatusHistory.create([payload], {
+    session,
+  });
 };
-
 /**
  * Create scheduler execution log
  */
-export const createSchedulerLog = async (payload) => {
-  return await SchedulerLog.create(payload);
+export const createSchedulerLog = async (payload, session) => {
+  return await SchedulerLog.create([payload], {
+    session,
+  });
 };

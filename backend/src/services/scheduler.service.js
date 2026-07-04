@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import {
   findPlacedOrders,
   findProcessingOrders,
@@ -6,70 +7,72 @@ import {
   createSchedulerLog,
 } from "../repositories/scheduler.repository.js";
 
-import { ORDER_STATUS } from "../constants/order.constant.js";
+import { CHANGED_BY, ORDER_STATUS } from "../constants/order.constant.js";
 
 export const runSchedulerService = async () => {
   const startedAt = new Date();
+  const session = await mongoose.startSession();
 
   let totalOrdersChecked = 0;
   let totalOrdersUpdated = 0;
 
   try {
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
-
     const twentyMinutesAgo = new Date(Date.now() - 20 * 60 * 1000);
 
-    /**
-     * ============================
-     * PLACED -> PROCESSING
-     * ============================
-     */
+    await session.withTransaction(async () => {
+      /**
+       * ============================
+       * PLACED -> PROCESSING
+       * ============================
+       */
 
-    const placedOrders = await findPlacedOrders(tenMinutesAgo);
+      const placedOrders = await findPlacedOrders(tenMinutesAgo);
 
-    totalOrdersChecked += placedOrders.length;
+      totalOrdersChecked += placedOrders.length;
 
-    for (const order of placedOrders) {
-      await updateOrderStatus(order._id, ORDER_STATUS.PROCESSING);
+      for (const order of placedOrders) {
+        await updateOrderStatus(order._id, ORDER_STATUS.PROCESSING, session);
 
-      await createOrderHistory({
-        order: order._id,
-        previousStatus: ORDER_STATUS.PLACED,
-        currentStatus: ORDER_STATUS.PROCESSING,
-        changedBy: "SCHEDULER",
-      });
+        await createOrderHistory(
+          {
+            order: order._id,
+            previousStatus: ORDER_STATUS.PLACED,
+            currentStatus: ORDER_STATUS.PROCESSING,
+            changedBy: CHANGED_BY.SCHEDULER,
+          },
+          session,
+        );
 
-      totalOrdersUpdated++;
-    }
+        totalOrdersUpdated++;
+      }
 
-    /**
-     * ======================================
-     * PROCESSING -> READY_TO_SHIP
-     * ======================================
-     */
+      /**
+       * ======================================
+       * PROCESSING -> READY_TO_SHIP
+       * ======================================
+       */
 
-    const processingOrders = await findProcessingOrders(twentyMinutesAgo);
+      const processingOrders = await findProcessingOrders(twentyMinutesAgo);
 
-    totalOrdersChecked += processingOrders.length;
+      totalOrdersChecked += processingOrders.length;
 
-    for (const order of processingOrders) {
-      await updateOrderStatus(order._id, ORDER_STATUS.READY_TO_SHIP);
+      for (const order of processingOrders) {
+        await updateOrderStatus(order._id, ORDER_STATUS.READY_TO_SHIP, session);
 
-      await createOrderHistory({
-        order: order._id,
-        previousStatus: ORDER_STATUS.PROCESSING,
-        currentStatus: ORDER_STATUS.READY_TO_SHIP,
-        changedBy: "SCHEDULER",
-      });
+        await createOrderHistory(
+          {
+            order: order._id,
+            previousStatus: ORDER_STATUS.PROCESSING,
+            currentStatus: ORDER_STATUS.READY_TO_SHIP,
+            changedBy: CHANGED_BY.SCHEDULER,
+          },
+          session,
+        );
 
-      totalOrdersUpdated++;
-    }
-
-    /**
-     * ============================
-     * Save Scheduler Log
-     * ============================
-     */
+        totalOrdersUpdated++;
+      }
+    });
 
     await createSchedulerLog({
       startedAt,
@@ -96,5 +99,7 @@ export const runSchedulerService = async () => {
     });
 
     throw error;
+  } finally {
+    await session.endSession();
   }
 };

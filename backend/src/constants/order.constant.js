@@ -4,6 +4,11 @@ export const ORDER_STATUS = {
   READY_TO_SHIP: "READY_TO_SHIP",
 };
 
+export const CHANGED_BY = {
+  SCHEDULER: "SCHEDULER",
+  ADMIN: "ADMIN",
+};
+
 export const PAYMENT_STATUS = {
   PENDING: "PENDING",
   PAID: "PAID",
