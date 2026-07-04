@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import orderRoutes from "./routes/order.route.js";
+import errorHandler from "./middlewares/error.middleware.js";
 
 dotenv.config({ quiet: true });
 
@@ -12,11 +14,7 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "Order Management API is running...",
-  });
-});
+app.use("/api/v1/orders", orderRoutes);
 
+app.use(errorHandler);
 export default app;
