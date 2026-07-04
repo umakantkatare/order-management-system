@@ -55,5 +55,3 @@ export const createOrderHistory = async (payload) => {
 export const createSchedulerLog = async (payload) => {
   return await SchedulerLog.create(payload);
 };
-
- "implement placed to processing scheduler"
