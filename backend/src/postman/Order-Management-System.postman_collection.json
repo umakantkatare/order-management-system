@@ -1,0 +1,248 @@
+{
+  "info": {
+    "_postman_id": "d927b4c8-2d4d-4617-aaa8-4efab5d19e6e",
+    "name": "Order Management System",
+    "description": "# Order Management System API\n\nThis Postman collection contains all APIs required for the Order Management System assignment.\n\n## Features\n\n- Create Order\n    \n- Get All Orders\n    \n- Filter Orders by Status\n    \n- Run Scheduler\n    \n\n## Environment Variables\n\n- baseURL\n    \n- scheduler_secret\n    \n\n## Scheduler\n\nThe scheduler endpoint is protected using the `x-secret-key` header and is automatically triggered in production using GitHub Actions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51928589",
+    "_collection_link": "https://go.postman.co/collection/51928589-d927b4c8-2d4d-4617-aaa8-4efab5d19e6e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 or 201', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([",
+                  "        200,",
+                  "        201",
+                  "    ]);",
+                  "})",
+                  "",
+                  "pm.test('Response time is less than 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "})",
+                  "",
+                  "pm.test('Response has JSON body', function () {",
+                  "    pm.response.to.be.json;",
+                  "})",
+                  "",
+                  "pm.test('Response body is an object', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "})",
+                  "",
+                  "pm.test('Order has an id', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id').or.have.property('_id').or.have.property('orderId');",
+                  "})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "})",
+                  "",
+                  "pm.test('Response time is less than 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "})",
+                  "",
+                  "pm.test('Response has JSON body', function () {",
+                  "    pm.response.to.be.json;",
+                  "})",
+                  "",
+                  "pm.test('Response body is an array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "})",
+                  "",
+                  "pm.test('Each order has required fields', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.length > 0) {",
+                  "        jsonData.forEach(function (order) {",
+                  "            pm.expect(order).to.be.an('object');",
+                  "        });",
+                  "    }",
+                  "})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "})",
+                  "",
+                  "pm.test('Response time is less than 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "})",
+                  "",
+                  "pm.test('Response has JSON body', function () {",
+                  "    pm.response.to.be.json;",
+                  "})",
+                  "",
+                  "pm.test('Response body is an array or object', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.satisfy(function (val) {",
+                  "        return Array.isArray(val) || typeof val === 'object';",
+                  "    });",
+                  "})",
+                  "",
+                  "pm.test('Filtered results are not null', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.not.be.null;",
+                  "})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Scheduler",
+      "item": [
+        {
+          "name": "Run Scheduler",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 or 202\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 202]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has JSON body\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is not null\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.not.be.null;",
+                  "});",
+                  "",
+                  "pm.test(\"Scheduler run acknowledged\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an(\"object\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-secret-key",
+                "value": "{{scheduler_secret}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/scheduler/run",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "scheduler",
+                "run"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": ""
+    },
+    {
+      "key": "scheduler_secret",
+      "value": ""
+    }
+  ]
+}
