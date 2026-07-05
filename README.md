@@ -80,9 +80,33 @@ The scheduler is protected using a secret key and is automatically triggered eve
 - Render (Backend)
 - Vercel (Frontend)
 
-### API Testing
+## 🧪 API Testing
 
-- Postman
+The project includes a complete Postman Collection for testing all available APIs.
+
+### Included Requests
+
+- Create Order
+- Get All Orders
+- Filter Orders by Status
+- Run Scheduler
+
+Each request includes automated Postman tests to validate:
+
+- Response status codes
+- Response time
+- Response structure
+- Required response fields
+
+### Importing the Collection
+
+1. Open Postman.
+2. Click **Import**.
+3. Select `backend/postman/Order-Management-System.postman_collection.json`.
+4. Create an environment with the following variables:
+   - `baseURL`
+   - `scheduler_secret`
+5. Run the requests to test all APIs.
 
 ## 🏗️ System Architecture
 
@@ -410,3 +434,4 @@ All requests include automated Postman tests for response validation.
 - GitHub: https://github.com/umakantkatare
 - LinkedIn: https://linkedin.com/in/umakant-katare
 ````
+`````
